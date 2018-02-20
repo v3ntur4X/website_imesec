@@ -3,7 +3,7 @@
  * Copyright 2013-2017 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-freelancer/blob/master/LICENSE)
  */
-body {
+html, body {
   font-family: 'Lato'; 
 }
 
@@ -158,7 +158,12 @@ section {
 
 header.masthead {
   padding-top: calc(6rem + 72px);
-  padding-bottom: 6rem; 
+  padding-bottom: 6rem;
+  height: 100%;
+  display: flex;
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
   header.masthead h1 {
     font-size: 3rem;
