@@ -3,6 +3,17 @@
  * Copyright 2013-2017 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-freelancer/blob/master/LICENSE)
  */
+
+@font-face{
+  font-family: "Orbitron-Bold";
+  src: url('../font/orbitron-bold.otf') format("opentype");
+}
+
+@font-face{
+  font-family: "Orbitron-Light";
+  src: url('../font/orbitron-light.otf') format("opentype");
+}
+
 html, body {
   font-family: 'Lato'; 
 }
