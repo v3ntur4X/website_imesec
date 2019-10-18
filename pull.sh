@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo docker exec -t -i nginx-website /usr/bin/pull
+docker exec -it nginx-website bash -c "cd /var/www/html && git pull"

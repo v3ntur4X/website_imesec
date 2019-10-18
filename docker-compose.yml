@@ -7,8 +7,8 @@ services:
     restart: unless-stopped
     
     environment:
-      # GIT_EMAIL: email_address 
-      # GIT_NAME: full_name 
+      GIT_EMAIL: imesec@ime.usp.br
+      GIT_NAME: imesec
       # GIT_USERNAME: git_username 
       GIT_REPO: https://github.com/IMEsec-USP/website.git
       VIRTUAL_HOST: site.torradeira.imesec.ime.usp.br
