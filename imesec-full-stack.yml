@@ -64,8 +64,6 @@ services:
       GIT_REPO: https://github.com/IMEsec-USP/website.git
       VIRTUAL_HOST: site.torradeira.imesec.ime.usp.br
       # WEBROOT: /var/www/html/website/
-    ports:
-      - "8988:80"
 
   whoami:
     image: jwilder/whoami
