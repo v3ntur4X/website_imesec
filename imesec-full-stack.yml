@@ -85,7 +85,7 @@ services:
 
   bind:
     container_name: bind
-    image: sameersbn/bind:9.11.3-20190706
+    image: sameersbn/bind:latest
     environment:
       WEBMIN_ENABLED: "false"
     volumes:
