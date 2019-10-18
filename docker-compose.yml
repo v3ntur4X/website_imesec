@@ -5,7 +5,11 @@ services:
     container_name: nginx-website
     image: richarvey/nginx-php-fpm:latest
     restart: unless-stopped
-    
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: "0"
     environment:
       GIT_EMAIL: imesec@ime.usp.br
       GIT_NAME: imesec
@@ -14,8 +18,5 @@ services:
       VIRTUAL_HOST: site.torradeira.imesec.ime.usp.br
       # WEBROOT: /var/www/html/website/
       # GIT_PERSONAL_TOKEN: <long_token_string_here> 
-    # volumes:
-    #   - ./data:/data
-    #   - /mnt/media/Comum/Musicas:/music:ro
     ports:
-      - "5555:80"
+      - "8988:80"
