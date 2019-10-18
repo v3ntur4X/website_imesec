@@ -63,7 +63,7 @@ services:
       GIT_NAME: imesec
       GIT_REPO: https://github.com/IMEsec-USP/website.git
       VIRTUAL_HOST: site.torradeira.imesec.ime.usp.br
-      # WEBROOT: /var/www/html/website/
+      WEBROOT: /var/www/html/website/
 
   whoami:
     image: jwilder/whoami
@@ -79,6 +79,21 @@ services:
       - /services/docker-compose/nginx-proxy/data/nginx.conf:/etc/nginx/nginx.conf
       - /services/docker-compose/nginx-proxy/data/certs:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  bind:
+    container_name: bind
+    image: sameersbn/bind:9.11.3-20190706
+    environment:
+      WEBMIN_ENABLED: "false"
+    volumes:
+      - /services/docker-compose/bind/data/etc:/etc/named
+      - /services/docker-compose/bind/data/var:/var/named
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
     deploy:
       placement:
         constraints: [node.role == manager]
