@@ -1,0 +1,14 @@
+[Unit]
+Description=nginx-website container service
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/services/docker-compose/nginx-website
+ExecStart=/services/docker-compose/nginx-website/run.sh
+ExecStop=/usr/bin/docker stop nginx-website
+# Other Restart options: or always, on-abort, etc
+
+[Install]
+WantedBy=multi-user.target

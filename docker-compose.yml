@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  nginx-website:
+    container_name: nginx-website
+    image: richarvey/nginx-php-fpm:latest
+    restart: unless-stopped
+    volumes: 
+      - ./website:/var/www/html/website/
+    environment:
+      WEBROOT: /var/www/html/website/
+    ports:
+      - "8988:80"
