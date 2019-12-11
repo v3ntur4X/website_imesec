@@ -1,0 +1,103 @@
+version: "3.4"
+services:
+  lh-web:
+    image: razgrizone/lightning-hacks-website
+    environment:
+      VIRTUAL_HOST: lh.imesec.ime.usp.br
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: "0"
+    ports:
+      - "8994:5000"
+
+  lh-api:
+    image: razgrizone/lightning-hacks-api
+    environment:
+      VIRTUAL_HOST: api-do-lh.imesec.ime.usp.br
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: "0"
+    ports:
+      - "8992:5000"
+    volumes:
+      - /tokens/lh-api.pickle:/data/token.pickle
+
+  lh-timer:
+    image: razgrizone/lightning-hacks-timer
+    environment:
+      VIRTUAL_HOST: timer.imesec.ime.usp.br
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: "0"
+    ports:
+      - "8998:8998"
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8999:8080"
+    environment:
+      VIRTUAL_HOST: swarm.imesec.ime.usp.br
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  nginx-website:
+    image: richarvey/nginx-php-fpm:latest
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: "0"
+    environment:
+      GIT_EMAIL: imesec@ime.usp.br
+      GIT_NAME: imesec
+      GIT_REPO: https://github.com/IMEsec-USP/website.git
+      VIRTUAL_HOST: imesec.ime.usp.br
+      WEBROOT: /var/www/html/website/
+
+  whoami:
+    image: jwilder/whoami
+    environment:
+      VIRTUAL_HOST: batata.imesec.ime.usp.br
+      
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /services/docker-compose/nginx-proxy/data/conf.d/:/etc/nginx/conf.mount/
+      - /services/docker-compose/nginx-proxy/data/nginx.conf:/etc/nginx/nginx.conf
+      - /services/docker-compose/nginx-proxy/data/certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  bind:
+    image: sameersbn/bind:latest
+    environment:
+      WEBMIN_ENABLED: "false"
+    volumes:
+      - /services/docker-compose/bind/data/:/data
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  default:
+    driver: overlay
+
