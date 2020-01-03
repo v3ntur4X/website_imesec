@@ -26,7 +26,7 @@ services:
     ports:
       - "8992:5000"
     volumes:
-      - /tokens/lh-api.pickle:/data/token.pickle
+      - /services/tokens/lh-api.pickle:/data/token.pickle
 
   lh-timer:
     image: razgrizone/lightning-hacks-timer
@@ -107,6 +107,7 @@ services:
       - /services/docker-compose/nginx-proxy/data/vhosts:/etc/nginx/vhost.d
       - /services/docker-compose/nginx-proxy/data/html:/usr/share/nginx/html
       - /services/docker-compose/nginx-proxy/data/certs:/etc/nginx/certs
+      - /services/docker-compose/nginx-proxy/data/letsencrypt_user_data:/app/letsencrypt_user_data
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
     environment:
@@ -130,6 +131,43 @@ services:
       placement:
         constraints:
           - node.labels.entrypoint == true
+
+  bookstack:
+    image: solidnerd/bookstack:0.26.3
+    # build: /services/bookstack
+    depends_on:
+    - bookstack_db
+    env_file:
+      /services/bookstack/data/bookstack.env
+    volumes:
+    - /services/bookstack/data/uploads:/var/www/bookstack/public/uploads
+    - /services/bookstack/data/storage:/var/www/bookstack/public/storage
+    - /services/bookstack/favicon.ico:/var/www/bookstack/public/favicon.ico
+    environment:
+      VIRTUAL_HOST: wiki.imesec.ime.usp.br
+      LETSENCRYPT_HOST: wiki.imesec.ime.usp.br
+
+  bookstack_db:
+    image: mysql:5.7.21
+    volumes:
+    - /services/bookstack/data/mysql:/var/lib/mysql
+    env_file:
+      /services/bookstack/data/bookstack_db.env
+    deploy:
+      replicas: 1
+
+  ctfd_beta:
+    image: ctfd/ctfd
+    environment:
+      VIRTUAL_HOST: betactf.imesec.ime.usp.br
+      LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
+
+  minemap-proxy:
+    image: mikesplain/nginx-proxy-pass
+    environment:
+      VIRTUAL_HOST: minemap.imesec.ime.usp.br
+      LETSENCRYPT_HOST: minemap.imesec.ime.usp.br
+      TARGET_SERVER: "gaia.zt.imesec.ime.usp.br:8123"
 
 networks:
   default:
