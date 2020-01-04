@@ -10,21 +10,18 @@ services:
       restart_policy:
         condition: any
         delay: "0"
-    ports:
-      - "8994:5000"
 
   lh-api:
     image: razgrizone/lightning-hacks-api
     environment:
       VIRTUAL_HOST: api.lh.imesec.ime.usp.br
       LETSENCRYPT_HOST: api.lh.imesec.ime.usp.br
+      VIRTUAL_PORT: 5000
     deploy:
       replicas: 2
       restart_policy:
         condition: any
         delay: "0"
-    ports:
-      - "8992:5000"
     volumes:
       - /services/tokens/lh-api.pickle:/data/token.pickle
 
@@ -38,8 +35,6 @@ services:
       restart_policy:
         condition: any
         delay: "0"
-    ports:
-      - "8998:8998"
 
   visualizer:
     image: dockersamples/visualizer:stable
@@ -96,8 +91,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     deploy:
       placement:
-        constraints: 
-          - node.labels.entrypoint == true
+        constraints: [node.role == manager]
 
   letsencrypt-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -156,18 +150,52 @@ services:
     deploy:
       replicas: 1
 
-  ctfd_beta:
-    image: ctfd/ctfd
-    environment:
-      VIRTUAL_HOST: betactf.imesec.ime.usp.br
-      LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
+  # ctfd_beta:
+  #   image: ctfd/ctfd
+  #   environment:
+  #     VIRTUAL_HOST: betactf.imesec.ime.usp.br
+  #     LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
 
   minemap-proxy:
     image: mikesplain/nginx-proxy-pass
+    deploy:
+      replicas: 2
     environment:
       VIRTUAL_HOST: minemap.imesec.ime.usp.br
       LETSENCRYPT_HOST: minemap.imesec.ime.usp.br
       TARGET_SERVER: "gaia.zt.imesec.ime.usp.br:8123"
+
+  ctfd:
+    image: ctfd/ctfd
+    env_file:
+      /services/ctfd/ctfd.env
+    environment:
+      VIRTUAL_HOST: betactf.imesec.ime.usp.br
+      LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
+    volumes:
+      - /services/ctfd/data/CTFd/logs:/var/log/CTFd
+      - /services/ctfd/data/CTFd/uploads:/var/uploads
+    depends_on:
+      - ctfd_db
+      - ctfd_cache
+
+  ctfd_db:
+    image: mariadb:10.4
+    deploy:
+      replicas: 1
+    env_file:
+      /services/ctfd/ctfd_db.env
+    volumes:
+      - /services/ctfd/data/mysql:/var/lib/mysql
+    # This command is required to set important mariadb defaults
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
+
+  ctfd_cache:
+    image: redis:4
+    deploy:
+      replicas: 1
+    volumes:
+      - /services/ctfd/data/redis:/data
 
 networks:
   default:
