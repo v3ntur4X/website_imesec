@@ -157,7 +157,9 @@ services:
   #     LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
 
   minemap-proxy:
-    image: mikesplain/nginx-proxy-pass
+    image: r0zbot/nginx-proxy-pass
+    ports:
+      - 9000:80
     deploy:
       replicas: 2
     environment:
@@ -200,4 +202,3 @@ services:
 networks:
   default:
     driver: overlay
-
