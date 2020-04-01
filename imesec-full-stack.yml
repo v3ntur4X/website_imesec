@@ -73,8 +73,12 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     ports:
-      - "80:80"
-      - "443:443"
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
     environment:
       DHPARAM_GENERATION: "false"
       DEBUG: "true"
@@ -160,45 +164,148 @@ services:
     image: r0zbot/nginx-proxy-pass
     ports:
       - 9000:80
+      # - target: 80
+      #   published: 9000
+      #   mode: host
     deploy:
-      replicas: 2
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.entrypoint == true
     environment:
       VIRTUAL_HOST: minemap.imesec.ime.usp.br
       LETSENCRYPT_HOST: minemap.imesec.ime.usp.br
       TARGET_SERVER: "gaia.zt.imesec.ime.usp.br:8123"
+      HTTP_PROTOCOL: http
 
-  ctfd:
+  ada:
+    image: razgrizone/ada
+    env_file:
+      /services/ada/ada.env
+    environment:
+      VIRTUAL_HOST: ada.imesec.ime.usp.br
+      LETSENCRYPT_HOST: ada.imesec.ime.usp.br
+
+
+
+  ###### BEGIN IMEX 2020
+
+  imex_secret_cipher:
+    image: imesecctf/secret-cipher
+    ports:
+      - 3901:3901
+
+  imex_floating_point:
+    image: imesecctf/floating-point:fixed
+    ports:
+      - 1209:1209
+
+  imex_biscoito:
+    image: romeoz/docker-apache-php
+    volumes:
+      - /services/imex_2019/biscoito/:/var/www/app/
+    environment:
+      VIRTUAL_HOST: biscoito.imesec.ime.usp.br
+      LETSENCRYPT_HOST: biscoito.imesec.ime.usp.br
+
+  imex_formless_post:
+    image: imesecctf/formless_post
+    environment:
+      VIRTUAL_HOST: segredo.imesec.ime.usp.br
+      LETSENCRYPT_HOST: segredo.imesec.ime.usp.br
+
+  imex_double_compression:
+    image: imesecctf/double-compression:latest
+    environment:
+      VIRTUAL_HOST: paca.imesec.ime.usp.br
+      LETSENCRYPT_HOST: paca.imesec.ime.usp.br
+
+  imex_voltando_no_tempo:
+    image: imesecctf/voltando_no_tempo
+    environment:
+      VIRTUAL_HOST: backtothefuture.imesec.ime.usp.br
+      LETSENCRYPT_HOST: backtothefuture.imesec.ime.usp.br
+
+  imex_pseudo_sorting:
+    image: imesecctf/pseudo-sorting
+    environment:
+      FLAG: CTF{o_brelf_provavalmente_ta_dormindo}
+    ports:
+      - 7777:7777
+
+  imex_mastermind:
+    image: imesecctf/mastermind
+    environment:
+      EASY_FLAG: CTF{o_novo_hearthstone}
+      HARD_FLAG: CTF{a_saideira}
+      VIRTUAL_HOST: mastermind.imesec.ime.usp.br
+      LETSENCRYPT_HOST: mastermind.imesec.ime.usp.br
+
+  ctfd_bixes:
     image: ctfd/ctfd
     env_file:
-      /services/ctfd/ctfd.env
+      /services/imex_2020/ctfd_bixes/ctfd.env
     environment:
-      VIRTUAL_HOST: betactf.imesec.ime.usp.br
-      LETSENCRYPT_HOST: betactf.imesec.ime.usp.br
+      VIRTUAL_HOST: imex.imesec.ime.usp.br
+      LETSENCRYPT_HOST: imex.imesec.ime.usp.br
     volumes:
-      - /services/ctfd/data/CTFd/logs:/var/log/CTFd
-      - /services/ctfd/data/CTFd/uploads:/var/uploads
+      - /services/imex_2020/ctfd_bixes/data/CTFd/logs:/var/log/CTFd
+      - /services/imex_2020/ctfd_bixes/data/CTFd/uploads:/var/uploads
     depends_on:
-      - ctfd_db
-      - ctfd_cache
+      - ctfd_bixes_db
+      - ctfd_bixes_cache
 
-  ctfd_db:
+  ctfd_bixes_db:
     image: mariadb:10.4
     deploy:
       replicas: 1
     env_file:
-      /services/ctfd/ctfd_db.env
+      /services/imex_2020/ctfd_bixes/ctfd_db.env
     volumes:
-      - /services/ctfd/data/mysql:/var/lib/mysql
+      - /services/imex_2020/ctfd_bixes/data/mysql:/var/lib/mysql
     # This command is required to set important mariadb defaults
     command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
 
-  ctfd_cache:
+  ctfd_bixes_cache:
     image: redis:4
     deploy:
       replicas: 1
     volumes:
-      - /services/ctfd/data/redis:/data
+      - /services/imex_2020/ctfd_bixes/data/redis:/data
+    
+  ctfd_geral:
+    image: ctfd/ctfd
+    env_file:
+      /services/imex_2020/ctfd_geral/ctfd.env
+    environment:
+      VIRTUAL_HOST: ctf.imesec.ime.usp.br
+      LETSENCRYPT_HOST: ctf.imesec.ime.usp.br
+    volumes:
+      - /services/imex_2020/ctfd_geral/data/CTFd/logs:/var/log/CTFd
+      - /services/imex_2020/ctfd_geral/data/CTFd/uploads:/var/uploads
+    depends_on:
+      - ctfd_geral_db
+      - ctfd_geral_cache
 
-networks:
-  default:
-    driver: overlay
+  ctfd_geral_db:
+    image: mariadb:10.4
+    deploy:
+      replicas: 1
+    env_file:
+      /services/imex_2020/ctfd_geral/ctfd_db.env
+    volumes:
+      - /services/imex_2020/ctfd_geral/data/mysql:/var/lib/mysql
+    # This command is required to set important mariadb defaults
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
+
+  ctfd_geral_cache:
+    image: redis:4
+    deploy:
+      replicas: 1
+    volumes:
+      - /services/imex_2020/ctfd_geral/data/redis:/data
+  ###### END IMEX 2020
+
+# networks:
+#   default:
+#     driver: overlay
