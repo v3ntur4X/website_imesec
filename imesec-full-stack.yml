@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   lh-web:
-    image: razgrizone/lightning-hacks-website
+    image: lightninghacks/website:latest
     environment:
       VIRTUAL_HOST: lh.imesec.ime.usp.br
       LETSENCRYPT_HOST: lh.imesec.ime.usp.br
@@ -12,7 +12,7 @@ services:
         delay: "0"
 
   lh-api:
-    image: razgrizone/lightning-hacks-api
+    image: lightninghacks/api
     environment:
       VIRTUAL_HOST: api.lh.imesec.ime.usp.br
       LETSENCRYPT_HOST: api.lh.imesec.ime.usp.br
@@ -26,7 +26,7 @@ services:
       - /services/tokens/lh-api.pickle:/data/token.pickle
 
   lh-timer:
-    image: razgrizone/lightning-hacks-timer
+    image: lightninghacks/timer
     environment:
       VIRTUAL_HOST: timer.imesec.ime.usp.br
       LETSENCRYPT_HOST: timer.imesec.ime.usp.br
@@ -50,19 +50,19 @@ services:
         constraints: [node.role == manager]
 
   nginx-website:
-    image: richarvey/nginx-php-fpm:latest
+    image: imesec/website
     deploy:
       replicas: 2
       restart_policy:
         condition: any
         delay: "0"
     environment:
+      VIRTUAL_PORT: 5000
       GIT_EMAIL: imesec@ime.usp.br
       GIT_NAME: imesec
       GIT_REPO: https://github.com/IMEsec-USP/website.git
       VIRTUAL_HOST: imesec.ime.usp.br
       LETSENCRYPT_HOST: imesec.ime.usp.br
-      WEBROOT: /var/www/html/website/
 
   whoami:
     image: jwilder/whoami
@@ -179,7 +179,7 @@ services:
       HTTP_PROTOCOL: http
 
   ada:
-    image: razgrizone/ada
+    image: imesec/ada
     env_file:
       /services/ada/ada.env
     environment:
