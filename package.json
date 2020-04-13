@@ -1,0 +1,29 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Esse repositório tem os arquivos usados no site do IMESec.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IMESec-USP/website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IMESec-USP/website/issues"
+  },
+  "homepage": "https://github.com/IMESec-USP/website#readme",
+  "dependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.42.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.11"
+  }
+}
