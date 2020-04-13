@@ -58,9 +58,6 @@ services:
         delay: "0"
     environment:
       VIRTUAL_PORT: 5000
-      GIT_EMAIL: imesec@ime.usp.br
-      GIT_NAME: imesec
-      GIT_REPO: https://github.com/IMEsec-USP/website.git
       VIRTUAL_HOST: imesec.ime.usp.br
       LETSENCRYPT_HOST: imesec.ime.usp.br
 
