@@ -2,9 +2,12 @@
   <h2 class="heading lectures-item--title">
     {{include.title}}
   </h2>
-  <img
-    class="lectures-item--image"
-    src="/assets/images/lectures/{{include.filename}}.png"
-  />
+  <!-- This container allows the use of parent percentages for width without changing the aspect ratio of the image  -->
+  <div class="lectures-item--image-container">
+    <img
+      class="lectures-item--image"
+      src="/assets/images/lectures/{{include.filename}}.png"
+    />
+  </div>
   <p class="lectures-item--description">{{include.description}}</p>
 </a>

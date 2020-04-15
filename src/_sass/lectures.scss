@@ -37,7 +37,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 90vw;
+  max-width: 90%;
   margin: 1em;
   padding: 2em;
   text-decoration: none;
@@ -65,12 +65,18 @@
   flex-grow: 1;
   text-align: center;
   text-decoration: none;
+  max-width: 80%;
+}
+
+.lectures-item--image-container {
+  width: 80%;
+  max-width: 25em;
+  margin: 0.5em;
 }
 
 .lectures-item--image {
-  max-width: 80vw;
-  width: 25em;
-  margin: 0.5em;
+  width: 100%;
+  height: auto;
 }
 
 .lectures-item--description {
