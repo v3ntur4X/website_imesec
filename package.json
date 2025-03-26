@@ -22,9 +22,9 @@
     "@babel/preset-env": "^7.26.9",
     "babel-loader": "^8.0.6",
     "core-js": "^3.40.0",
-    "webpack": "^5.98.0"
+    "webpack": "^4.42.0"
   },
   "devDependencies": {
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^3.3.11"
   }
 }
