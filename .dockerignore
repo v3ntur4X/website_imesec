@@ -1,4 +1,5 @@
 .gitignore
+.bundle
 .sass-cache
 vendor
 */.jekyll-cache
