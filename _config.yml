@@ -33,6 +33,7 @@ plugins:
   - jekyll-feed
   - jekyll-assets
   - jekyll-minifier
+  - jekyll-paginate
 assets:
   js_compressor: nil
 # Exclude from processing.
@@ -43,6 +44,10 @@ assets:
 # Excluded items can be processed by explicitly listing the directories or
 # their entries' file path in the `include:` list.
 #
+
+paginate: 5
+paginate_path: "/posts/page:num"
+
 exclude:
   - node_modules/
   - webpack/
