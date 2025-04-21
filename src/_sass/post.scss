@@ -36,6 +36,7 @@
 .post--content {
   max-width: 50em;
   width: 90%;
+  box-sizing: border-box;
   line-height: 1.7;
   color: #ccc;
 
@@ -70,6 +71,11 @@
     border-radius: 4px;
     font-family: monospace;
     overflow-x: auto;
+  }
+  
+  .highlighter-rouge {
+      overflow-wrap: anywhere;
+      word-break: break-all;
   }
 }
 
